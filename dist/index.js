@@ -1,3 +1,3 @@
-import MyButton from "./MyButton";
+import FileUpload from "./FileUpload";
 
-export { MyButton };
+export default FileUpload;

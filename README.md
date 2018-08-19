@@ -37,12 +37,31 @@ npm install react-to-npm
 ```
 
 ```
-import { MyButton } from "react-to-npm";
+import FileUpload from "FileUpload";
 
-<MyButton
-    type="default"
-    text="this is a examle component"
-    onClick={()=>{console.log("clicked")}}
+<FileUpload
+    node="导入"
+    maxSize={5}
+    request={{
+        url:"/api/fileUpload",
+        method: "POST",
+        fields: {
+            salaryGroupId,
+            calBizId,
+            calVersion,
+            bizGroup:
+                "floating_data"
+        },
+        headers: {
+            <!-- "X-CSRF-TOKEN": cookie.get("_X_CSRF_TOKEN") -->
+        }
+    }}
+    uploadSuccess={() => {
+        ...
+    }}
+    uploadError={() => {
+        ...
+    }}
 />
 ```
 
