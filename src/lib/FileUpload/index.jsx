@@ -109,7 +109,7 @@ class FileUpload extends Component {
         return (
             <div className="upload">
                 {node}
-                <input type="file" name="file" onChange={e => this.check(e)} />
+                <input type="file" multiple name="file" onChange={e => this.check(e)} />
             </div>
         );
     }
