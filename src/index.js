@@ -8,7 +8,7 @@ export class App extends React.Component {
       <div>
         <p>How to use:</p>
         <FileUpload
-          node={
+          customNode={
             <span>click to upload your file</span>
           }
           maxSize={5}
