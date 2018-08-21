@@ -8,7 +8,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Toast } from "antd-mobile";
 
 import "./index.css";
 
@@ -27,6 +26,8 @@ var FileUpload = function (_Component) {
         }
 
         return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = FileUpload.__proto__ || Object.getPrototypeOf(FileUpload)).call.apply(_ref, [this].concat(args))), _this), _this.uploadComplete = function (event) {
+            console.log(event);
+
             var _ref2 = _this.props || {},
                 uploadSuccess = _ref2.uploadSuccess,
                 uploadError = _ref2.uploadError;
@@ -36,16 +37,15 @@ var FileUpload = function (_Component) {
                 var result = JSON.parse(xhr.responseText);
                 if (result && result.success !== null && result.success !== undefined) {
                     if (result.success === true) {
-                        uploadSuccess();
+                        if (!uploadSuccess) alert("导入成功");else uploadSuccess();
                     } else {
-                        uploadError();
+                        if (!uploadError) alert(result.errorMsg || "导入失败啦～");else uploadError();
                     }
                 } else {
                     console.log("服务器返回值非标准JSON格式,无法处理,请联系管理员");
                 }
             } else {
                 if (xhr.statusText.indexOf("404")) {
-                    Toast.info("只能选择一个文件", 200);
                     console.log("服务器没有响应,请检查您的上传路径");
                 } else {
                     console.log("服务器处理错误");
@@ -57,32 +57,6 @@ var FileUpload = function (_Component) {
             // console.log("uploadFailed to be continue...");
         }, _this.uploadCanceled = function () {
             // console.log("uploadCanceled to be continue...");
-        }, _this.check = function (e) {
-            var _this$props = _this.props,
-                _this$props$multiple = _this$props.multiple,
-                multiple = _this$props$multiple === undefined ? false : _this$props$multiple,
-                _this$props$maxSize = _this$props.maxSize,
-                maxSize = _this$props$maxSize === undefined ? 5 : _this$props$maxSize;
-
-            var files = e.target.files;
-            var size = files.size;
-
-            if (!multiple) {
-                size = files[0].size;
-                if (files[0]) {
-                    if (e.target.files.length !== 1) {
-                        Toast.info("只能选择一个文件", 200);
-                        return;
-                    }
-                }
-            }
-            if (size > maxSize * 1024 * 1024) {
-                Toast.info("文件大小不能超过" + maxSize + "MB", 200);
-            } else {
-                _this.send(files);
-            }
-            // console.log(e.target.files,9)   
-            e.target.files = [];
         }, _this.send = function (files) {
             var xhr = new XMLHttpRequest();
 
@@ -118,15 +92,39 @@ var FileUpload = function (_Component) {
                 });
             }
             xhr.send(formData);
+        }, _this.check = function (e) {
+            var _this$props = _this.props,
+                _this$props$multiple = _this$props.multiple,
+                multiple = _this$props$multiple === undefined ? false : _this$props$multiple,
+                _this$props$maxSize = _this$props.maxSize,
+                maxSize = _this$props$maxSize === undefined ? 5 : _this$props$maxSize;
+
+            var files = e.target.files;
+
+            // alert({ message: 1 + JSON.stringify(e.target.files) });
+            var size = files.size;
+
+            if (!multiple) {
+                size = files[0].size;
+                if (files[0]) {
+                    if (e.target.files.length !== 1) {
+                        alert("只能选择一个文件", 2);
+                        return;
+                    }
+                }
+            }
+            if (size > maxSize * 1024 * 1024) {
+                alert("文件大小不能超过" + maxSize + "MB", 2);
+            } else {
+                _this.send(files);
+            }
+
+            // e.target.value = [];
+            // console.log(e.target.files);
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
-    // constructor(props) {
-    //     super(props);
-    // }
 
-    /**
-     *  verify file
-     */
+    //verify
 
 
     _createClass(FileUpload, [{
@@ -134,15 +132,25 @@ var FileUpload = function (_Component) {
         value: function render() {
             var _this2 = this;
 
-            var node = this.props.node;
+            var _props = this.props,
+                customNode = _props.customNode,
+                multiple = _props.multiple;
 
             return React.createElement(
                 "div",
                 { className: "upload" },
-                node,
-                React.createElement("input", { type: "file", name: "file", onChange: function onChange(e) {
-                        return _this2.check(e);
-                    } })
+                customNode,
+                React.createElement("input", {
+                    multiple: multiple,
+                    type: "file",
+                    name: "file",
+                    onChange: function onChange(e) {
+                        _this2.check(e);
+                    },
+                    onClick: function onClick(e) {
+                        e.stopPropagation();
+                    }
+                })
             );
         }
     }]);
@@ -151,7 +159,7 @@ var FileUpload = function (_Component) {
 }(Component);
 
 FileUpload.propTypes = {
-    node: PropTypes.element || PropTypes.string,
+    node: PropTypes.string || PropTypes.element,
     maxSize: PropTypes.number,
     multiple: PropTypes.bool
 };

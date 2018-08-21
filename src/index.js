@@ -13,7 +13,7 @@ export class App extends React.Component {
           }
           maxSize={5}
           request={{
-            url: "/rest/api/v1/salaryDataApi/salaryDataImportFromMobile",
+            url: "",
             method: "POST",
             fields: {
               name: "test fields"

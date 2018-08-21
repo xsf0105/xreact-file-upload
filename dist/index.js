@@ -1,3 +1,3 @@
-import FileUpload from "./FileUpload";
+import FileUpload from "./fileUpload";
 
 export default FileUpload;
